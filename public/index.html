@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UofT Course Planner</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>UofT Course Planner</h1>
+            <p>Enter a course code (e.g., CSC148H1) to visualize its relationships.</p>
+        </header>
+        <div class="search-container">
+            <form id="course-form">
+                <input list="course-list" type="text" id="course-input" placeholder="e.g., CSC309H1" required>
+                <datalist id="course-list"></datalist>
+                <button type="submit">Visualize</button>
+            </form>
+        </div>
+        
+        <div class="filter-container">
+            <div class="filter-section">
+                <label>Year Level Filter</label>
+                <div class="multi-select-container">
+                    <div class="option-tags" id="year-tags"></div>
+                    <div class="custom-select" id="year-select">
+                        <div class="select-dropdown">Select year levels...</div>
+                        <div class="options-list">
+                            <div class="option-item" data-value="1">First Year (1xx)</div>
+                            <div class="option-item" data-value="2">Second Year (2xx)</div>
+                            <div class="option-item" data-value="3">Third Year (3xx)</div>
+                            <div class="option-item" data-value="4">Fourth Year (4xx)</div>
+                            <div class="option-item" data-value="5">Graduate (5xx+)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <label>Department Filter</label>
+                <div class="multi-select-container">
+                    <div class="option-tags" id="dept-tags"></div>
+                    <div class="custom-select" id="dept-select">
+                        <div class="select-dropdown">Select departments...</div>
+                        <div class="options-list">
+                            <div class="option-item" data-value="CSC">Computer Science (CSC)</div>
+                            <div class="option-item" data-value="MAT">Mathematics (MAT)</div>
+                            <div class="option-item" data-value="PHY">Physics (PHY)</div>
+                            <div class="option-item" data-value="STA">Statistics (STA)</div>
+                            <div class="option-item" data-value="ACT">Actuarial Science (ACT)</div>
+                            <div class="option-item" data-value="CHM">Chemistry (CHM)</div>
+                            <div class="option-item" data-value="BIO">Biology (BIO)</div>
+                            <div class="option-item" data-value="ECO">Economics (ECO)</div>
+                            <div class="option-item" data-value="other">Other Departments</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <button type="button" id="apply-filters">Apply Filters</button>
+                <button type="button" id="clear-filters">Clear Filters</button>
+            </div>
+            
+            <div id="filter-warning" class="filter-warning hidden">
+                ⚠️ Current filter settings may hide some important prerequisite relationships
+            </div>
+        </div>
+        <div id="loading-indicator" class="hidden">
+            <div class="spinner"></div>
+            <p>Loading graph...</p>
+        </div>
+        <div id="mynetwork"></div>
+        <div id="course-info" class="hidden">
+            <div class="course-info-header">
+                <h3 id="info-code"></h3>
+                <button id="navigate-btn" class="navigate-btn">Navigate to Course</button>
+            </div>
+            <p id="info-title"></p>
+            <p id="info-description"></p>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html> 

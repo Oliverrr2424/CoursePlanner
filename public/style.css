@@ -1,0 +1,408 @@
+:root {
+    --background-color: #f5f5f7;
+    --text-color: #1d1d1f;
+    --primary-color: #0071e3;
+    --container-bg: #ffffff;
+    --border-color: #d2d2d7;
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 40px;
+    min-height: 100vh;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    background-color: var(--container-bg);
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+}
+
+header p {
+    font-size: 1.1rem;
+    color: #6e6e73;
+    margin-bottom: 30px;
+}
+
+.search-container {
+    margin-bottom: 20px;
+}
+
+.filter-container {
+    margin-bottom: 20px;
+    padding: 24px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+.filter-section {
+    margin-bottom: 20px;
+}
+
+.filter-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+/* 苹果风格的多选标签容器 */
+.multi-select-container {
+    margin-bottom: 12px;
+}
+
+.option-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+    min-height: 32px;
+    align-items: flex-start;
+}
+
+.option-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    animation: slideIn 0.2s ease-out;
+    transition: all 0.2s ease;
+}
+
+.option-tag:hover {
+    background-color: #0077ed;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,113,227,0.3);
+}
+
+.option-tag .remove-btn {
+    margin-left: 6px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.option-tag .remove-btn:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+
+/* 苹果风格的下拉选择器 */
+.custom-select {
+    position: relative;
+    width: 100%;
+}
+
+.select-dropdown {
+    width: 100%;
+    padding: 12px 40px 12px 16px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    background-color: white;
+    font-family: var(--font-family);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    appearance: none;
+    position: relative;
+}
+
+.select-dropdown:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0,113,227,0.1);
+}
+
+.select-dropdown:hover {
+    border-color: #a1a1a6;
+}
+
+/* 苹果风格的下拉箭头 */
+.custom-select::after {
+    content: '';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #a1a1a6;
+    transition: transform 0.2s ease;
+    pointer-events: none;
+}
+
+.custom-select.open::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* 苹果风格的选项列表 */
+.options-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 4px;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.options-list.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.option-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.9rem;
+}
+
+.option-item:last-child {
+    border-bottom: none;
+}
+
+.option-item:hover {
+    background-color: #f8f9fa;
+}
+
+.option-item.selected {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.option-item.selected:hover {
+    background-color: #0077ed;
+}
+
+.filter-section button {
+    font-family: var(--font-family);
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#apply-filters {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#apply-filters:hover {
+    background-color: #0077ed;
+}
+
+#clear-filters {
+    background-color: #6c757d;
+    color: white;
+}
+
+#clear-filters:hover {
+    background-color: #545b62;
+}
+
+.filter-warning {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    color: #856404;
+    font-size: 0.9rem;
+    animation: slideIn 0.3s ease-out;
+}
+
+#course-form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#course-input {
+    font-family: var(--font-family);
+    font-size: 1rem;
+    padding: 10px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 300px;
+}
+
+#course-form button {
+    font-family: var(--font-family);
+    font-size: 1rem;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#course-form button:hover {
+    background-color: #0077ed;
+}
+
+#mynetwork {
+    width: 100%;
+    height: 600px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background-color: #fafafa;
+}
+
+.hidden {
+    display: none;
+}
+
+#loading-indicator {
+    padding: 20px;
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: var(--primary-color);
+    margin: 0 auto 10px;
+    animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#course-info {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f5f5f7;
+    border-radius: 12px;
+    text-align: left;
+    border: 1px solid var(--border-color);
+    animation: slideIn 0.3s ease-out;
+}
+
+.course-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.course-info-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.navigate-btn {
+    font-family: var(--font-family);
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #ff9900, #ff7700);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(255, 153, 0, 0.3);
+}
+
+.navigate-btn:hover {
+    background: linear-gradient(135deg, #ff7700, #ff5500);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.4);
+}
+
+.navigate-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(255, 153, 0, 0.3);
+}
+
+#mynetwork {
+    width: 100%;
+    height: 600px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background-color: #fafafa;
+    transition: all 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* 网络图表的动画效果 */
+#mynetwork.animating {
+    animation: fadeIn 0.5s ease-out;
+} 
