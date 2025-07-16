@@ -34,9 +34,10 @@
                 <div class="advanced-search-section">
                     <h3>🔍 高级课程关系搜索</h3>
                     <div class="search-inputs">
-                        <div class="search-group">
+                        <div class="search-group" style="position:relative;">
                             <label for="courseSearchInput">课程代码:</label>
-                            <input type="text" id="courseSearchInput" placeholder="例如: CSC209H1" class="search-input">
+                            <input type="text" id="courseSearchInput" placeholder="例如: CSC209H1" class="search-input" autocomplete="off">
+                            <div id="suggestions" class="suggestions hidden"></div>
                         </div>
                         <div class="search-group">
                             <label for="relationTypeSelect">关系类型:</label>
@@ -148,6 +149,11 @@
 
         <!-- Tooltip -->
         <div id="tooltip" class="tooltip hidden"></div>
+        <!-- Node Action Menu -->
+        <div id="node-menu" class="node-menu hidden">
+            <button id="node-info-btn" class="menu-btn">课程信息</button>
+            <button id="node-graph-btn" class="menu-btn">查看Graph</button>
+        </div>
     </div>
 
     <script src="app.js"></script>
