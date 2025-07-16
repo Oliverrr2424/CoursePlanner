@@ -2,8 +2,8 @@ const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs/promises');
 const path = require('path');
 
-const DB_FILE = 'courses.db';
-const JSON_FILE = path.join(__dirname, 'all_courses.json');
+const DB_FILE = process.env.DB_FILE || 'courses.db';
+const JSON_FILE = process.env.JSON_FILE || path.join(__dirname, 'all_courses.json');
 
 async function initializeDatabase() {
     // Delete old database file if it exists

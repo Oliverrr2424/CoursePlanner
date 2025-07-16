@@ -1,93 +1,159 @@
-# UofT Course Planner
+# 🎓 UofT Course Planner
 
-An interactive web application for visualizing University of Toronto course relationships including prerequisites, post-requisites, and exclusions with an Apple-style interface.
+**Intelligent Course Relationship Visualization with HCI-Enhanced Design**
 
-## Features
+A modern, interactive course planning tool for University of Toronto students, featuring intelligent relationship analysis and Apple-style design.
 
-- **Interactive Course Graph**: Visualize course relationships with a modern, hierarchical layout
-- **Apple-Style Filtering**: Multi-select filters for year levels and departments
-- **Smart Navigation**: Click on courses to navigate through the course network
-- **Comprehensive Data**: 519 courses from breadth requirement 5 (The Physical and Mathematical Universes)
-- **Modern UI**: Clean, Apple-inspired design with smooth animations
+## ✨ Features
 
-## Quick Start
+### 🧠 Intelligent Relationship Analysis
+- **Smart Relationship Strength Calculation**: Automatically analyzes course relationships based on path distance and connection density
+- **Visual Hierarchy**: Strong relationships are highlighted with deeper colors and larger nodes
+- **Intelligent Layout**: Related courses are positioned closer to the center, weak relationships are placed at the edges
 
-1. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
+### 🔄 Dual Search Modes
+- **Prerequisites Mode**: See what courses you need to take before a specific course
+- **Postrequisites Mode**: See what advanced courses become available after taking a specific course
+- **One-Click Toggle**: Easily switch between modes with the intuitive toggle button
 
-2. **Initialize Database**:
-   ```bash
-   node database.js
-   ```
+### 🎨 Apple-Style Design
+- **Modern Glass Morphism**: Beautiful backdrop blur effects and transparency
+- **Smooth Animations**: Fluid transitions and micro-interactions
+- **Responsive Layout**: Optimized for all screen sizes
+- **Intuitive UX**: Clean, minimal interface following Apple design principles
 
-3. **Start Server**:
-   ```bash
-   node index.js
-   ```
+### 🔍 Enhanced Interactions
+- **Hover Tooltips**: Quick course information on hover
+- **Click Details**: Full course information with relationship strength indicators
+- **Smart Filtering**: Filter by year level and department with intelligent warnings
+- **Real-time Search**: Instant course suggestions with autocomplete
 
-4. **Open Application**:
-   Navigate to `http://localhost:3001` in your browser
+## 🚀 Quick Start
 
-## Usage
+### Prerequisites
+- Node.js 20+ 
+- npm
 
-1. Enter a course code (e.g., `CSC148H1`) to generate the course relationship graph
-2. Use the year level filter to focus on specific academic levels (1xx-5xx)
-3. Use the department filter to show only courses from selected departments
-4. Click on any course node to view details and navigate to that course's graph
-5. Apply filters to simplify complex graphs or clear them to see all relationships
+### Installation
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/CoursePlanner.git
+cd CoursePlanner
 
-## Filter Features
+# Install dependencies
+npm install
 
-- **Year Level Filter**: First Year (1xx), Second Year (2xx), Third Year (3xx), Fourth Year (4xx), Graduate (5xx+)
-- **Department Filter**: Computer Science (CSC), Mathematics (MAT), Physics (PHY), Statistics (STA), and more
-- **Smart Warnings**: Alerts when filters might hide important prerequisite relationships
-- **Apple-Style Tags**: Selected filters displayed as removable blue tags
+# Initialize database
+npm run init-db
 
-## Technical Stack
-
-- **Backend**: Node.js, Express.js, SQLite3
-- **Frontend**: HTML, CSS, JavaScript, vis-network
-- **Data**: Web-scraped from UofT Arts & Science course calendar
-- **UI**: Apple-inspired design with custom multi-select components
-
-## Project Structure
-
-```
-CoursePlanner/
-├── index.js              # Main server file
-├── database.js           # Database initialization
-├── package.json          # Node.js dependencies
-├── public/               # Frontend files
-│   ├── index.html        # Main HTML page
-│   ├── app.js           # Frontend JavaScript
-│   └── style.css        # Styles and animations
-├── scraper/             # Data scraping tools
-│   ├── scraper.js       # Course data scraper
-│   └── package.json     # Scraper dependencies
-└── README.md           # This file
+# Start the server
+npm start
 ```
 
-## Data Source
+### Usage
+1. Open your browser and navigate to `http://localhost:3001`
+2. Enter a course code (e.g., `CSC148H1`)
+3. Choose between Prerequisites or Postrequisites mode
+4. Explore the interactive course relationship graph
+5. Use filters to focus on specific year levels or departments
 
-Course data is scraped from the University of Toronto Arts & Science course calendar, specifically focusing on courses with breadth requirement 5 (The Physical and Mathematical Universes). The application includes:
+## 🎯 Use Cases
 
-- Computer Science (CSC): 79 courses
-- Mathematics (MAT): 81 courses  
-- Physics (PHY): 59 courses
-- Statistics (STA): 44 courses
-- Other departments: 256 courses
-- **Total**: 519 courses
+### For First-Year Students
+- **Plan Your Learning Path**: Search for courses you want to take and see what prerequisites you need
+- **Understand Course Importance**: Switch to postrequisites mode to see how foundational courses lead to advanced topics
 
-## Contributing
+### For Upper-Year Students  
+- **Explore Advanced Options**: See what specialized courses become available after completing core requirements
+- **Plan Your Specialization**: Understand the relationships between different course streams
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+### For Academic Advisors
+- **Visualize Complex Dependencies**: Quickly understand course relationships across different departments
+- **Identify Bottlenecks**: Spot courses that are prerequisites for many advanced courses
 
-## License
+## 🔧 Technical Architecture
 
-This project is for educational purposes. Course data belongs to the University of Toronto. 
+### Frontend
+- **Visualization**: vis.js Network for interactive graphs
+- **Styling**: Modern CSS with Apple design language
+- **Interactions**: Vanilla JavaScript with event-driven architecture
+- **Animations**: CSS transitions and JavaScript animations
+
+### Backend
+- **Framework**: Express.js
+- **Database**: SQLite with 519 courses and relationships
+- **APIs**: RESTful endpoints for course data and relationships
+
+### Key Algorithms
+- **Relationship Strength**: O(n²) algorithm considering path distance, direct connections, and connection density
+- **Smart Layout**: Physics-based layout with relationship-driven positioning
+- **Intelligent Filtering**: Real-time filtering with break detection warnings
+
+## 📊 Data Coverage
+
+- **519 Courses** from multiple departments
+- **Thousands of Relationships** between courses
+- **Departments**: Computer Science, Mathematics, Physics, Statistics, Actuarial Science, Chemistry, Biology, Economics
+- **Year Levels**: First year (1xx) to Graduate level (5xx+)
+
+## 🎨 Design Philosophy
+
+### HCI Principles Applied
+1. **Information Hierarchy**: Visual cues help users quickly understand complex relationships
+2. **Progressive Disclosure**: Show essential information first, details on demand
+3. **Consistency**: Uniform design language throughout the interface
+4. **Feedback**: Immediate visual feedback for all user actions
+
+### Visual Design
+- **Color Coding**: Strong relationships in deep blue, weak relationships in light gray
+- **Size Variation**: Important courses are larger and more prominent
+- **Spatial Organization**: Related courses are grouped together
+- **Typography**: Clear hierarchy with appropriate font sizes and weights
+
+## 🔮 Future Enhancements
+
+### Planned Features
+- [ ] Course difficulty ratings
+- [ ] Multi-course search and comparison
+- [ ] Learning path recommendations
+- [ ] Progress tracking integration
+- [ ] Mobile app version
+
+### Technical Improvements
+- [ ] Performance optimizations for large datasets
+- [ ] Advanced filtering options
+- [ ] Export functionality for course plans
+- [ ] Integration with UofT course registration system
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+### Development Setup
+```bash
+# Install dependencies
+npm install
+
+# Run in development mode
+npm run dev
+
+# Run tests
+npm test
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **UofT Arts & Science Calendar** for course data
+- **vis.js** for the powerful network visualization library
+- **Apple Design Guidelines** for UI/UX inspiration
+- **HCI Research** for interaction design principles
+
+---
+
+**Built with ❤️ for UofT students**
+
+*Transform complex course relationships into intuitive visual insights* 

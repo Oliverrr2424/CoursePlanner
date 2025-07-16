@@ -2,8 +2,8 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs/promises');
 
-const BASE_URL = 'https://artsci.calendar.utoronto.ca';
-const SEARCH_PATH = '/search-courses';
+const BASE_URL = process.env.BASE_URL || 'https://artsci.calendar.utoronto.ca';
+const SEARCH_PATH = process.env.SEARCH_PATH || '/search-courses';
 
 /**
  * Parses the HTML content of a course details block from the search results page.

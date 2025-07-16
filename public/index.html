@@ -3,30 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UofT Course Planner</title>
+    <title>UofT Course Planner - Intelligent Course Relationship Visualization</title>
     <link rel="stylesheet" href="style.css">
-    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>UofT Course Planner</h1>
-            <p>Enter a course code (e.g., CSC148H1) to visualize its relationships.</p>
+        <!-- Header -->
+        <header class="header">
+            <h1>🎓 UofT Course Planner</h1>
+            <p class="subtitle">Intelligent Course Relationship Visualization</p>
         </header>
-        <div class="search-container">
-            <form id="course-form">
-                <input list="course-list" type="text" id="course-input" placeholder="e.g., CSC309H1" required>
-                <datalist id="course-list"></datalist>
-                <button type="submit">Visualize</button>
-            </form>
-        </div>
-        
-        <div class="filter-container">
-            <div class="filter-section">
-                <label>Year Level Filter</label>
-                <div class="multi-select-container">
-                    <div class="option-tags" id="year-tags"></div>
-                    <div class="custom-select" id="year-select">
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="search-container">
+                <!-- 搜索模式切换 -->
+                <div class="search-mode-toggle">
+                    <button id="prerequisiteMode" class="mode-btn active" data-mode="prerequisites">
+                        <span class="icon">📚</span>
+                        前置课程
+                    </button>
+                    <button id="postrequisiteMode" class="mode-btn" data-mode="postrequisites">
+                        <span class="icon">🎯</span>
+                        后置课程
+                    </button>
+                </div>
+
+                <!-- 高级搜索模块 -->
+                <div class="advanced-search-section">
+                    <h3>🔍 高级课程关系搜索</h3>
+                    <div class="search-inputs">
+                        <div class="search-group">
+                            <label for="courseSearchInput">课程代码:</label>
+                            <input type="text" id="courseSearchInput" placeholder="例如: CSC209H1" class="search-input">
+                        </div>
+                        <div class="search-group">
+                            <label for="relationTypeSelect">关系类型:</label>
+                            <select id="relationTypeSelect" class="search-select">
+                                <option value="direct-prerequisites">直属前置课程</option>
+                                <option value="indirect-prerequisites">非直属前置课程</option>
+                                <option value="direct-postrequisites">直属后置课程</option>
+                                <option value="indirect-postrequisites">非直属后置课程</option>
+                            </select>
+                        </div>
+                        <button id="advancedSearchBtn" class="search-btn">
+                            <span class="icon">🔍</span>
+                            搜索关系
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 关系搜索结果 -->
+                <div id="relationResults" class="relation-results hidden">
+                    <h3>📋 课程关系搜索结果</h3>
+                    <div class="results-tabs">
+                        <button class="tab-btn active" data-tab="direct">直属关系</button>
+                        <button class="tab-btn" data-tab="indirect">非直属关系</button>
+                    </div>
+                    <div class="results-content">
+                        <div id="directResults" class="tab-content active">
+                            <div class="course-list" id="directCourseList"></div>
+                        </div>
+                        <div id="indirectResults" class="tab-content">
+                            <div class="course-list" id="indirectCourseList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filters Section -->
+        <section class="filters-section">
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label>Year Level:</label>
+                    <div class="apple-select" id="year-select">
                         <div class="select-dropdown">Select year levels...</div>
                         <div class="options-list">
                             <div class="option-item" data-value="1">First Year (1xx)</div>
@@ -36,14 +88,12 @@
                             <div class="option-item" data-value="5">Graduate (5xx+)</div>
                         </div>
                     </div>
+                    <div class="selected-tags" id="year-tags"></div>
                 </div>
-            </div>
-            
-            <div class="filter-section">
-                <label>Department Filter</label>
-                <div class="multi-select-container">
-                    <div class="option-tags" id="dept-tags"></div>
-                    <div class="custom-select" id="dept-select">
+
+                <div class="filter-group">
+                    <label>Department:</label>
+                    <div class="apple-select" id="dept-select">
                         <div class="select-dropdown">Select departments...</div>
                         <div class="options-list">
                             <div class="option-item" data-value="CSC">Computer Science (CSC)</div>
@@ -54,35 +104,52 @@
                             <div class="option-item" data-value="CHM">Chemistry (CHM)</div>
                             <div class="option-item" data-value="BIO">Biology (BIO)</div>
                             <div class="option-item" data-value="ECO">Economics (ECO)</div>
-                            <div class="option-item" data-value="other">Other Departments</div>
                         </div>
                     </div>
+                    <div class="selected-tags" id="dept-tags"></div>
+                </div>
+
+                <div class="filter-actions">
+                    <button id="apply-filters" class="btn btn-primary">Apply Filters</button>
+                    <button id="clear-filters" class="btn btn-secondary">Clear All</button>
                 </div>
             </div>
-            
-            <div class="filter-section">
-                <button type="button" id="apply-filters">Apply Filters</button>
-                <button type="button" id="clear-filters">Clear Filters</button>
-            </div>
-            
+
+            <!-- Filter Warning -->
             <div id="filter-warning" class="filter-warning hidden">
-                ⚠️ Current filter settings may hide some important prerequisite relationships
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
+                </svg>
+                <span>Some prerequisite relationships may be hidden by current filters.</span>
             </div>
-        </div>
-        <div id="loading-indicator" class="hidden">
+        </section>
+
+        <!-- Loading Indicator -->
+        <div id="loading-indicator" class="loading-indicator hidden">
             <div class="spinner"></div>
-            <p>Loading graph...</p>
+            <p>Loading course relationships...</p>
         </div>
-        <div id="mynetwork"></div>
-        <div id="course-info" class="hidden">
-            <div class="course-info-header">
+
+        <!-- Network Visualization -->
+        <section class="visualization-section">
+            <div id="mynetwork" class="network-container"></div>
+        </section>
+
+        <!-- Course Information Panel -->
+        <section id="course-info" class="course-info hidden">
+            <div class="info-header">
                 <h3 id="info-code"></h3>
-                <button id="navigate-btn" class="navigate-btn">Navigate to Course</button>
+                <button id="navigate-btn" class="btn btn-primary">Navigate to Course</button>
             </div>
-            <p id="info-title"></p>
+            <h4 id="info-title"></h4>
+            <p id="info-relationship" class="relationship-info"></p>
             <p id="info-description"></p>
-        </div>
+        </section>
+
+        <!-- Tooltip -->
+        <div id="tooltip" class="tooltip hidden"></div>
     </div>
+
     <script src="app.js"></script>
 </body>
 </html> 
