@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('course-form');
-    const input = document.getElementById('course-input');
-    const datalist = document.getElementById('course-list');
+    const searchInput = document.getElementById('courseSearchInput');
+    const suggestions = document.getElementById('suggestions');
+    let allCourses = [];
     const networkContainer = document.getElementById('mynetwork');
     const loadingIndicator = document.getElementById('loading-indicator');
     const courseInfoContainer = document.getElementById('course-info');
@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let network = null;
     let currentGraphData = null;
     let originalGraphData = null;
+    let selectedNode = null;
     let currentFilters = {
         years: [],
         departments: []
@@ -22,13 +23,38 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('/api/courses')
         .then(res => res.json())
         .then(courses => {
-            courses.forEach(c => {
-                const option = document.createElement('option');
-                option.value = `${c.code} - ${c.title}`;
-                datalist.appendChild(option);
+            allCourses = courses;
+            // 绑定输入事件以显示实时建议
+            searchInput.addEventListener('input', () => {
+                const term = searchInput.value.trim().toUpperCase();
+                if (!term) {
+                    suggestions.classList.add('hidden');
+                    return;
+                }
+                const matches = allCourses.filter(c => c.code.startsWith(term)).slice(0,5);
+                if (matches.length === 0) {
+                    suggestions.classList.add('hidden');
+                    return;
+                }
+                suggestions.innerHTML = matches.map(m => `<div class="suggestion-item" data-code="${m.code}">${m.code} - ${m.title}</div>`).join('');
+                suggestions.classList.remove('hidden');
+            });
+
+            suggestions.addEventListener('click', (e) => {
+                const item = e.target.closest('.suggestion-item');
+                if (item) {
+                    searchInput.value = item.dataset.code;
+                    suggestions.classList.add('hidden');
+                }
             });
         })
         .catch(err => console.error('Failed to load course list:', err));
+
+    const resolveCourseCode = (code) => {
+        const clean = code.toUpperCase().replace(/\s+/g, '');
+        const match = allCourses.find(c => c.code.startsWith(clean));
+        return match ? match.code : clean;
+    };
 
     // 计算关系强度
     const calculateRelationshipStrength = (node, rootNode, allNodes, allEdges) => {
@@ -88,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const baseColor = baseColors[node.group] || baseColors.unexplored;
         
         // 根据强度调整颜色
-        const alpha = 0.3 + (strength * 0.7); // 0.3 到 1.0
+        const alpha = 0.2 + (strength * 0.8); // 根据距离调整透明度
         const color = `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${alpha})`;
         const borderColor = `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 1)`;
         
@@ -171,6 +197,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 springLength: 300,
                 damping: 0.4
             },
+            hierarchicalRepulsion: {
+                nodeDistance: 200
+            },
             minVelocity: 0.5,
             maxVelocity: 50,
             stabilization: {
@@ -193,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 sortMethod: 'directed',
                 shakeTowards: 'leaves'
             },
+            improvedLayout: true
         },
         groups: {
             root: { 
@@ -256,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 edge.width = 1 + (edgeStrength * 4); // 1-5px
                 edge.color = {
                     color: '#000000',
-                    opacity: 0.3 + (edgeStrength * 0.7) // 0.3-1.0
+                    opacity: 0.2 + (edgeStrength * 0.8)
                 };
             }
         });
@@ -273,11 +303,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 添加节点点击事件
         network.on("click", function (params) {
+            hideNodeMenu();
             if (params.nodes.length > 0) {
                 const nodeId = params.nodes[0];
                 const node = data.nodes.find(n => n.id === nodeId);
                 if (node) {
-                    showCourseInfo(node);
+                    selectedNode = node;
+                    showNodeMenu(params.pointer.DOM);
                 }
             } else {
                 courseInfoContainer.classList.add('hidden');
@@ -382,6 +414,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const nodeMenu = document.getElementById('node-menu');
+    const showNodeMenu = (position) => {
+        if (!nodeMenu) return;
+        nodeMenu.style.left = position.x + 'px';
+        nodeMenu.style.top = position.y + 'px';
+        nodeMenu.classList.add('show');
+        nodeMenu.classList.remove('hidden');
+    };
+
+    const hideNodeMenu = () => {
+        if (nodeMenu) {
+            nodeMenu.classList.remove('show');
+            nodeMenu.classList.add('hidden');
+        }
+    };
+
     // 切换搜索模式
     const toggleSearchMode = () => {
         searchMode = searchMode === 'prerequisites' ? 'postrequisites' : 'prerequisites';
@@ -389,14 +437,14 @@ document.addEventListener('DOMContentLoaded', () => {
         searchModeToggle.classList.toggle('active');
         
         // 更新输入框提示
-        input.placeholder = searchMode === 'prerequisites' 
-            ? 'Enter course code to see prerequisites...' 
+        searchInput.placeholder = searchMode === 'prerequisites'
+            ? 'Enter course code to see prerequisites...'
             : 'Enter course code to see postrequisites...';
     };
 
     // 导航到课程的函数
     const navigateToCourse = async (courseCode) => {
-        input.value = courseCode;
+        searchInput.value = courseCode;
         loadingIndicator.classList.remove('hidden');
         courseInfoContainer.classList.add('hidden');
 
@@ -426,15 +474,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // 表单提交事件
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        let courseCode = input.value.trim();
-        if (courseCode.includes(' - ')) {
-            courseCode = courseCode.split(' - ')[0].trim();
+    searchInput.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            let code = resolveCourseCode(searchInput.value.trim());
+            searchInput.value = code;
+            if (!code) return;
+            await navigateToCourse(code);
         }
-        if (!courseCode) return;
-
-        await navigateToCourse(courseCode);
     });
 
     // 搜索模式切换事件
@@ -684,6 +731,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 navigateToCourse(courseCode);
             }
         }
+        if (nodeMenu && !nodeMenu.contains(e.target) && !e.target.classList.contains('vis-node')) {
+            hideNodeMenu();
+        }
+        if (e.target && e.target.id === 'node-info-btn') {
+            hideNodeMenu();
+            if (selectedNode) {
+                showCourseInfo(selectedNode);
+            }
+        }
+        if (e.target && e.target.id === 'node-graph-btn') {
+            hideNodeMenu();
+            if (selectedNode) {
+                navigateToCourse(selectedNode.id);
+            }
+        }
     });
 
     // 搜索模式切换
@@ -721,7 +783,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const indirectCourseList = document.getElementById('indirectCourseList');
 
     advancedSearchBtn.addEventListener('click', async () => {
-        const courseCode = document.getElementById('courseSearchInput').value.trim();
+        let courseCode = document.getElementById('courseSearchInput').value.trim();
+        courseCode = resolveCourseCode(courseCode);
+        document.getElementById('courseSearchInput').value = courseCode;
         const relationType = document.getElementById('relationTypeSelect').value;
 
         if (!courseCode) {
@@ -818,4 +882,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 初始化搜索占位符
     updateSearchPlaceholder();
-}); 
+
+    window.addEventListener('resize', () => {
+        if (network) {
+            network.fit();
+        }
+    });
+});
